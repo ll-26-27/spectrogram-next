@@ -8,11 +8,13 @@ is the original code from `../spectrogram`, lightly patched. The page shell
 ## Run
 
 ```bash
-npm install
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Then open <http://localhost:3000>.
+
+The pnpm override pins Sass's `immutable` dependency to compatible version 5.1.9 so installation satisfies the Notebook checkout's minimum-release-age policy. Version 5.1.10 was published on November 9, 2026, the day this checkout was added.
 
 ## Layout
 

@@ -1,3 +1,9 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+# Preserve the existing denied dependency builds in pnpm's current format.
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
+  '@parcel/watcher': false
+
+# Sass accepts this release; keep installs compatible with the release-age policy.
+overrides:
+  'sass>immutable': 5.1.9
