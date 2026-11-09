@@ -406,7 +406,9 @@ AnalyserView.prototype.drawGL = function() {
 		projection.loadIdentity();
 		projection.perspective(55 /*35*/, canvas.width / canvas.height, 1, 100);
 		view.loadIdentity();
-		view.translate(0, 0, -9.0 /*-13.0*/);
+		// +X on view shifts the mesh toward the right half of the viewport so the
+		// generation edge sits on the right, with history panning off to the left.
+		view.translate(2.5, 0, -9.0 /*-13.0*/);
 
 		// Add in camera controller's rotation
 		model.loadIdentity();

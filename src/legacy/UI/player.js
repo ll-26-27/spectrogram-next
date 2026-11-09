@@ -211,6 +211,9 @@ Player.prototype.playTone = function(freq) {
 };
 
 Player.prototype.stopTone = function() {
+	// handleTrack can fire mouseup/touchend without a preceding playTone
+	// (e.g. a plain click on the canvas in draw mode), leaving osc undefined.
+	if (!this.osc) return;
 	this.osc.stop(0);
 	this.osc = null;
 };

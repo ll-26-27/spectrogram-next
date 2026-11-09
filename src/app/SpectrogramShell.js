@@ -149,6 +149,20 @@ export default function SpectrogramShell() {
         >
           <div className="icon icon-wine" />
         </div>
+        <div
+          className="music-box__buttons__button"
+          data-name="Adele — Someone Like You"
+          data-src="/bin/snd/adele_someone_like_you.mp3"
+        >
+          <div className="icon icon-photo icon-adele" />
+        </div>
+        <div
+          className="music-box__buttons__button"
+          data-name="Billie Eilish — What Was I Made For"
+          data-src="/bin/snd/billie_what_was_i_made_for.mp3"
+        >
+          <div className="icon icon-photo icon-billie" />
+        </div>
       </div>
 
       <div id="fileDrop">

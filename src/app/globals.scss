@@ -32,33 +32,36 @@ body, html {
   &.hide { display: none; }
 }
 
+// Keep these in sync: bottom-bar height drives the canvas height below.
+$buttonSize: min(10rem, calc((100vw - 4rem) / 14 - 1rem));
+$buttonStripHeight: calc(#{$buttonSize} + 2.6rem);
+
 .music-box__buttons {
   position: fixed;
   bottom: 0;
   z-index: 100;
-  white-space: nowrap;
   background-color: $buttonContainerBackground;
-  padding-left: 2rem;
-  padding-top: 1.3rem;
-  padding-bottom: 1.3rem;
+  padding: 1.3rem 2rem;
   width: 100%;
-  text-align: center;
-  overflow-x: scroll;
+  // Flex layout: buttons share available width evenly, cap at $buttonSize,
+  // no horizontal scrolling on reasonable screens.
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 .music-box__buttons__button {
   background-color: $buttonColor;
   color: $buttonIconColor;
-  width: 9rem;
-  height: 9rem;
-  display: inline-block;
-  border-radius: 30rem;
+  width: $buttonSize;
+  height: $buttonSize;
+  flex: 0 0 auto;
+  border-radius: 50%;
   overflow: hidden;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
-  margin-right: 1.1rem;
   position: relative;
-  text-align: center;
-  vertical-align: middle;
   cursor: pointer;
   // center the masked icon inside the button
   display: inline-flex;
@@ -87,7 +90,7 @@ canvas {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 11.8rem);
+  height: calc(100% - #{$buttonStripHeight});
 }
 
 #legend { display: none; }
