@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spectrogram (Next.js port)
 
-## Getting Started
+A hybrid Next.js port of the Chrome Music Lab spectrogram. The WebGL/audio engine
+(`src/legacy/3D`, `src/legacy/UI`, `src/legacy/util`, `public/legacy-libs/o3djs-bundle.js`)
+is the original code from `../spectrogram`, lightly patched. The page shell
+(`src/app`) is React.
 
-First, run the development server:
+## Run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app/SpectrogramShell.js` — `'use client'` component. Renders the canvas + UI
+  shell as JSX, then in `useEffect` loads jQuery onto `window` and dynamically
+  imports `legacy/main.js` to bootstrap the WebGL spectrogram.
+- `src/app/layout.js` — Root layout. Loads `o3djs-bundle.js` via `<Script
+  strategy="beforeInteractive">` so `window.o3djs` is available before the
+  client component mounts.
+- `src/app/globals.scss` (+ `_reset.scss`, `_animation.scss`, `_spinner.scss`,
+  `_icons.scss`) — Port of `screen.scss`. Icons use CSS `mask-image` against
+  the SVGs in `public/icons/` instead of a generated icon font.
+- `src/legacy/` — original modules. Patched only as needed:
+  - `3D/visualizer.js`: `var AnalyserView = ...`, `o3djs` → `window.o3djs`,
+    shader URLs made absolute.
+  - `UI/player.js`: `var context = ...`, `empty.mp3` URL made absolute.
+- `public/bin/snd`, `public/bin/shaders`, `public/icons`, `public/images` —
+  static assets, served from origin root.
+- `public/legacy-libs/o3djs-bundle.js` — concatenation of
+  `o3djs/{base,math,quaternions,shader}.js`, equivalent to the original
+  gulp `bundle-libs` task.
 
-## Learn More
+## Toward a full React rewrite
 
-To learn more about Next.js, take a look at the following resources:
+Quarantined seams that should fall next:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Replace jQuery click/blur/visibility/dragdrop wiring in `legacy/main.js`
+   with React state + event handlers in `SpectrogramShell.js`.
+2. Convert `spec3D` (in `legacy/UI/spectrogram.js`) and `Player` (in
+   `legacy/UI/player.js`) to a `useSpectrogram()` hook owning the
+   `AnalyserView` + `Player` lifecycle.
+3. The WebGL engine itself (`3D/visualizer.js`, `3D/matrix4x4.js`,
+   `3D/cameracontroller.js`, `o3djs/*`) is framework-agnostic — keep as-is.
+4. Once side effects are cleanupable, re-enable `reactStrictMode: true` in
+   `next.config.mjs` and remove the `window.__spectrogramBooted` guard.

@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local reference copy of upstream spectrogram (not part of the app)
+/_reference
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
